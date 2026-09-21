@@ -1,0 +1,32 @@
+name: Collecte des annonces WatchBoard
+ 
+on:
+  schedule:
+    - cron: "0 * * * *"   # toutes les heures
+  workflow_dispatch:        # bouton "Run workflow" manuel dans l'onglet Actions
+ 
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+ 
+      - run: pip install beautifulsoup4
+ 
+      - name: Lancer la collecte
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python collect_listings.py
+ 
+      - name: Commit et push si changement
+        run: |
+          git config user.name "watchboard-bot"
+          git config user.email "bot@watchboard.local"
+          git add data/listings.json
+          git diff --staged --quiet || git commit -m "Mise à jour des annonces"
+          git push
