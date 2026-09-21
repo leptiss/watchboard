@@ -29,9 +29,12 @@ MAX_EMAILS_PER_LABEL = 15
 OUTPUT_PATH = Path("data/listings.json")
 
 # ---------------------------------------------------------------------------
-# Table de classement par référence — matché contre le titre de l'annonce.
+# Table de classement par référence — matché contre le titre de l'annonce
+# ET le nom de la recherche sauvegardée (les deux sont concaténés avant
+# comparaison), pour rester fiable même si le vendeur oublie la référence
+# dans son titre.
 # "exact" = la référence telle qu'elle apparaît chez les vendeurs (prioritaire).
-# "keywords" = repli si la référence exacte n'est pas écrite dans le titre.
+# "keywords" = repli si la référence exacte n'apparaît nulle part.
 # ---------------------------------------------------------------------------
 REF_RULES = {
     "bb-chrono":    {"exact": ["79360N"], "keywords": ["black bay chrono", "bb chrono"]},
@@ -44,8 +47,8 @@ REF_RULES = {
 UNSORTED_KEY = "unsorted"
 
 
-def classify(title: str) -> str:
-    t = title.lower()
+def classify(title: str, search_name: str = "") -> str:
+    t = f"{search_name} {title}".lower()
     for ref_id, rules in REF_RULES.items():
         for exact in rules["exact"]:
             if exact.lower() in t:
@@ -76,8 +79,8 @@ def get_html_body(msg) -> str | None:
     return None
 
 
-def parse_chrono24(html: str):
-    """Retourne une liste de dicts {title, price, meta, url} pour un email Chrono24."""
+def parse_chrono24(html: str, search_name: str = ""):
+    """Retourne une liste de dicts {title, price, meta, url, search_name} pour un email Chrono24."""
     soup = BeautifulSoup(html, "html.parser")
     results = []
     for table in soup.select("table.article-inner-table"):
@@ -91,12 +94,15 @@ def parse_chrono24(html: str):
         price = price_tag.get_text(strip=True) if price_tag else "Prix sur demande"
         country_p = table.find_all("p")[-1] if table.find_all("p") else None
         meta = country_p.get_text(strip=True) if country_p else ""
-        results.append({"source": "Chrono24", "title": title, "price": price, "meta": meta, "url": url})
+        results.append({
+            "source": "Chrono24", "title": title, "price": price, "meta": meta,
+            "url": url, "search_name": search_name,
+        })
     return results
 
 
 def parse_leboncoin(html: str, search_name: str):
-    """Retourne une liste de dicts {title, price, meta, url} pour un email Leboncoin."""
+    """Retourne une liste de dicts {title, price, meta, url, search_name} pour un email Leboncoin."""
     soup = BeautifulSoup(html, "html.parser")
     results = []
     for a in soup.select('a[href*="/vi/"]'):
@@ -114,6 +120,7 @@ def parse_leboncoin(html: str, search_name: str):
             "price": price,
             "meta": f"{search_name} · {lieu}" if search_name else lieu,
             "url": href,
+            "search_name": search_name,
         })
     return results
 
@@ -141,7 +148,9 @@ def fetch_label(imap, label: str):
         if "chrono24" in label.lower():
             if "recherche sauvegardée" not in subject.lower():
                 continue
-            listings.extend(parse_chrono24(html))
+            m = re.search(r"«\s*(.+?)\s*»", subject)
+            search_name = m.group(1) if m else subject
+            listings.extend(parse_chrono24(html, search_name))
         else:
             if "nouveaux résultats" not in subject.lower():
                 continue
@@ -159,7 +168,7 @@ def merge_and_save(new_listings):
 
     added = 0
     for item in new_listings:
-        ref_id = classify(item["title"])
+        ref_id = classify(item["title"], item.get("search_name", ""))
         bucket = existing.setdefault(ref_id, [])
         if any(l["url"] == item["url"] for l in bucket):
             continue  # déjà en historique, on ne duplique pas
