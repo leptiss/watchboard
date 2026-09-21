@@ -996,6 +996,21 @@ const watches = [
     bezel: "—",
     bracelet: "—",
     image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23F2F5FA'/><circle cx='100' cy='100' r='68' fill='none' stroke='%232F6FE4' stroke-width='6'/><path d='M65 105 L90 130 L140 75' fill='none' stroke='%232F6FE4' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+  },
+  {
+    id: "unsorted",
+    brand: "Tri",
+    name: "Non classées",
+    ref: "En attente de tri",
+    year: 2026,
+    priceValue: 0,
+    price: "—",
+    description: "Annonces récoltées automatiquement par le script mais que le classement par référence n'a pas su rattacher à l'une des 6 montres suivies. À trier manuellement, ou à affiner en ajustant les règles de classement.",
+    years: "—",
+    dial: "—",
+    bezel: "—",
+    bracelet: "—",
+    image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23F2F5FA'/><path d='M60 60 L140 140 M140 60 L60 140' stroke='%23A0A8B8' stroke-width='8' stroke-linecap='round'/></svg>"
   }
 ];
 
@@ -1007,7 +1022,7 @@ const sourceLogos = {
   "WatchUSeek": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAEAAQAMBEQACEQEDEQH/xAAZAAADAQEBAAAAAAAAAAAAAAAAAQIGAwT/xAArEAACAgIBAwIDCQAAAAAAAAABAgARAwQxEiFRBRMGMvAUIiNBYoKhsbL/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAJREBAQACAQIGAgMAAAAAAAAAAAECEQMxUQQSEyFBsRTwUmGR/9oADAMBAAIRAxEAPwDETTIgOASggEgUAgEBwKAlDqAVAkiApAoDgUBKLAgOoARAkiBBgKQd9DEufdwYnBKvkVWrwTKrd4/gjDkwrmTC5wsnX7nu9gPvcn9p/jzHts+NMj6nqpr+pZdfXVugV0g9zwItk91mOVute7kmtmZgq4mskDjzMXlwk3a3jwcuV1MaBrZmUsMTUBfHIkvLhLrazg5bNzGuTYMtE+09D9JmvPh3Z9Lk6+WkNTYZun2XBsDutAEzN5cJN7anh+W3XlrzurIxV1KsOQZuWX3jlZcbqu2hlXBu4MrkhUyKzV4BlG3x/GOumsddNjMMJDAp0eav/I+jL8pr2ZX1PaTY9SybGuT0kqVJFEUBJZLNNTKyy/KBuZ6P4hNsGJIs2Kr+hOXocfb9/a7TxXN/Ltf81r6hfasq10lRQA7KOBxLeLC9WZ4jknT6iW3tiqGSuwHZR+UnocfZv8rm7/SDvbFk9Y+cP8o7N5j0OPt/SflcvXfzvpOrzZHbI5dzbMbJrkzckxmo45ZXK3K9UysqBlFgwKBgBMCCYEmBMgUBiUUDAdwC4CJgTAUgIBAcAuUEAkCgED//2Q=="
 };
 
-const mockListings = {
+let mockListings = {
   "test": [
     {source:"Leboncoin", title:"Tableau Rolex", meta:"Rolex toute la France · Ennezat 63720", price:"250 €", date:"2026-09-21", url:"https://www.leboncoin.fr/vi/3273736496.htm"},
     {source:"Leboncoin", title:"Rolex maillons air king", meta:"Rolex toute la France · Châteauroux 36000", price:"120 €", date:"2026-09-21", url:"https://www.leboncoin.fr/vi/3273709335.htm"},
@@ -1081,6 +1096,19 @@ watches.forEach(w => {
   grid.appendChild(el);
   caseEls[w.id] = el;
 });
+
+// ---------- Live data from the collection pipeline ----------
+// Populates real listings fetched from data/listings.json (produced by
+// collect_listings.py via GitHub Actions). Silently no-ops if the file
+// isn't reachable (e.g. opened as a local file instead of served over http).
+fetch('./data/listings.json')
+  .then(r => (r.ok ? r.json() : {}))
+  .then(data => {
+    Object.keys(data).forEach(refId => {
+      mockListings[refId] = data[refId];
+    });
+  })
+  .catch(() => {});
 
 // ---------- Filters ----------
 const filtersToggle = document.getElementById('filters-toggle');
