@@ -913,6 +913,7 @@
       <span>Source</span><span>Annonce</span><span>Date</span><span>Prix</span><span>Action</span><span></span>
     </div>
     <div class="listings" id="listings"></div>
+    <p class="favorites-empty" id="listings-empty" style="display:none">Aucune annonce pour l'instant sur cette référence.</p>
   </div>
 </div>
 
@@ -1061,36 +1062,7 @@ const sourceLogos = {
   "WatchUSeek": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAEAAQAMBEQACEQEDEQH/xAAZAAADAQEBAAAAAAAAAAAAAAAAAQIGAwT/xAArEAACAgIBAwIDCQAAAAAAAAABAgARAwQxEiFRBRMGMvAUIiNBYoKhsbL/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAJREBAQACAQIGAgMAAAAAAAAAAAECEQMxUQQSEyFBsRTwUmGR/9oADAMBAAIRAxEAPwDETTIgOASggEgUAgEBwKAlDqAVAkiApAoDgUBKLAgOoARAkiBBgKQd9DEufdwYnBKvkVWrwTKrd4/gjDkwrmTC5wsnX7nu9gPvcn9p/jzHts+NMj6nqpr+pZdfXVugV0g9zwItk91mOVute7kmtmZgq4mskDjzMXlwk3a3jwcuV1MaBrZmUsMTUBfHIkvLhLrazg5bNzGuTYMtE+09D9JmvPh3Z9Lk6+WkNTYZun2XBsDutAEzN5cJN7anh+W3XlrzurIxV1KsOQZuWX3jlZcbqu2hlXBu4MrkhUyKzV4BlG3x/GOumsddNjMMJDAp0eav/I+jL8pr2ZX1PaTY9SybGuT0kqVJFEUBJZLNNTKyy/KBuZ6P4hNsGJIs2Kr+hOXocfb9/a7TxXN/Ltf81r6hfasq10lRQA7KOBxLeLC9WZ4jknT6iW3tiqGSuwHZR+UnocfZv8rm7/SDvbFk9Y+cP8o7N5j0OPt/SflcvXfzvpOrzZHbI5dzbMbJrkzckxmo45ZXK3K9UysqBlFgwKBgBMCCYEmBMgUBiUUDAdwC4CJgTAUgIBAcAuUEAkCgED//2Q=="
 };
 
-let mockListings = {
-  "bb-chrono": [
-    {source:"Chrono24", title:"Tudor Black Bay Chrono 79360N, full set 2022", meta:"Vendeur pro · Allemagne", price:"4 950 €", date:"2026-09-15"},
-    {source:"eBay", title:"Tudor Heritage Black Bay Chrono panda, boîte et papiers", meta:"Particulier · France", price:"4 700 €", date:"2026-09-12"},
-    {source:"Leboncoin", title:"Black Bay Chrono 79360N révisée récemment", meta:"Particulier · Lyon", price:"4 500 €", date:"2026-09-16"},
-    {source:"WatchUSeek", title:"WTS Tudor BB Chrono 79360N, worn twice", meta:"Forum · US", price:"4 300 €", date:"2026-09-08"}
-  ],
-  "bb-58": [
-    {source:"Chrono24", title:"Tudor Black Bay 58 M79030N-0001, quasi neuve", meta:"Vendeur pro · Suisse", price:"3 200 €", date:"2026-09-14"},
-    {source:"Leboncoin", title:"Black Bay 58 noire, boîte complète, facture", meta:"Particulier · Paris", price:"2 950 €", date:"2026-09-16"},
-    {source:"eBay", title:"Tudor BB58 M79030N-0001 full set 2021", meta:"Particulier · Belgique", price:"2 890 €", date:"2026-09-10"}
-  ],
-  "reverso": [
-    {source:"Chrono24", title:"JLC Reverso Classic Small Q2618430, papiers", meta:"Vendeur pro · France", price:"3 400 €", date:"2026-09-13"},
-    {source:"WatchUSeek", title:"JLC Reverso Small, comme neuve, boîte", meta:"Forum · UK", price:"3 150 €", date:"2026-09-05"}
-  ],
-  "bb-gmt-pepsi": [
-    {source:"Chrono24", title:"Tudor Black Bay GMT 79830RB « Pepsi », full set", meta:"Vendeur pro · Italie", price:"3 600 €", date:"2026-09-11"},
-    {source:"eBay", title:"Tudor BB GMT Pepsi 79830RB, boîte et papiers", meta:"Particulier · France", price:"3 450 €", date:"2026-09-09"},
-    {source:"Leboncoin", title:"Black Bay GMT Pepsi révisée", meta:"Particulier · Marseille", price:"3 300 €", date:"2026-09-15"}
-  ],
-  "br05-gmt": [
-    {source:"Chrono24", title:"Bell & Ross BR 05 GMT noir, quasi neuve", meta:"Vendeur pro · France", price:"4 600 €", date:"2026-09-10"},
-    {source:"WatchUSeek", title:"BR05 GMT full set, worn few times", meta:"Forum · UK", price:"4 250 €", date:"2026-09-06"}
-  ],
-  "gp-wwtc": [
-    {source:"Chrono24", title:"Girard-Perregaux WW.TC 49805, boîte et papiers", meta:"Vendeur pro · Suisse", price:"6 200 €", date:"2026-09-07"},
-    {source:"eBay", title:"GP WW.TC World Timer 49805, vintage", meta:"Particulier · US", price:"5 700 €", date:"2026-09-02"}
-  ]
-};
+let mockListings = {};
 
 const grid = document.getElementById('grid');
 const detail = document.getElementById('detail');
@@ -1346,6 +1318,7 @@ function renderListings(w, list){
   const container = document.getElementById('listings');
   container.innerHTML = '';
   const visible = list.filter(l => !archives[l.url]);
+  document.getElementById('listings-empty').style.display = visible.length === 0 ? 'block' : 'none';
   visible.forEach((l, i) => {
     const id = `${w.id}-${i}`;
     const isFav = !!favorites[id];
