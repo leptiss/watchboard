@@ -43,6 +43,9 @@ REF_RULES = {
     "bb-gmt-pepsi": {"exact": ["79830RB"], "keywords": ["black bay gmt", "pepsi"]},
     "br05-gmt":     {"exact": ["BR05G-BL-ST/SRB", "BR05G-BL-ST"], "keywords": ["br 05 gmt", "br05 gmt"]},
     "gp-wwtc":      {"exact": ["49805"], "keywords": ["ww.tc", "wwtc", "world timer"]},
+    "tank-solo":    {"exact": ["W1018355"], "keywords": ["tank solo"]},
+    "airking-14000": {"exact": ["14000"], "keywords": ["air-king 14000", "air king 14000", "airking 14000"]},
+    "op-15200":     {"exact": ["15200"], "keywords": ["oyster perpetual date 15200", "oyster perpetual 15200"]},
 }
 UNSORTED_KEY = "unsorted"
 
