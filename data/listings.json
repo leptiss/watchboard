@@ -2339,6 +2339,14 @@
       "price": "3 500 €",
       "date": "2026-11-18",
       "url": "https://www.chrono24.fr/tudor/black-bay-chrono--id49787132.htm"
+    },
+    {
+      "source": "Chrono24",
+      "title": "Tudor Black Bay",
+      "meta": "DE",
+      "price": "3 599 €",
+      "date": "2026-11-27",
+      "url": "https://www.chrono24.fr/tudor/black-bay--id50048343.htm"
     }
   ],
   "bb-gmt-pepsi": [
@@ -2357,6 +2365,16 @@
       "price": "2 600 €",
       "date": "2026-11-01",
       "url": "https://www.chrono24.fr/tudor/black-bay--id49611890.htm"
+    }
+  ],
+  "gp-wwtc": [
+    {
+      "source": "Chrono24",
+      "title": "Girard Perregaux WW.TC",
+      "meta": "IT",
+      "price": "4 700 €",
+      "date": "2026-11-27",
+      "url": "https://www.chrono24.fr/girardperregaux/wwtc--id50076511.htm"
     }
   ]
 }
